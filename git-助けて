@@ -1,0 +1,8 @@
+#!/bin/sh
+
+CURDIR=`dirname $0`
+HELPERS=`ls $CURDIR/git-* | sed -e "s/^\.\/git-//" | grep -e "^[^助]"`
+for HELPER in $HELPERS
+do
+  echo git $HELPER
+done

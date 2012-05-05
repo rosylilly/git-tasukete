@@ -2,4 +2,10 @@
 
 git-tasukete は、gitでなんかしくじったっぽい時に何とかする方法を提示してくれる便利なエイリアス集です。
 
+## インストール
 
+    $ cd ~
+    $ git clone git://github.com/rosylilly/git-tasukete.git git-tasukete
+    $ export PATH=$HOME/git-tasukete:$PATH
+    $ rehash # optional
+    $ git 助けて
