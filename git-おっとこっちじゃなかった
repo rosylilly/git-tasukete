@@ -1,0 +1,13 @@
+#!/bin/sh
+
+new_branch=$1
+
+if [ $new_branch -x ]; then
+  echo 'どこだった？';
+  read new_branch;
+fi
+
+git reset HEAD^
+git checkout -b $new_branch
+git add .
+git commit
