@@ -1,8 +1,9 @@
 #!/bin/sh
 
 CURDIR=`dirname $0`
-HELPERS=`ls $CURDIR/git-* | sed -e "s/^\.\/git-//" | grep -e "^[^助]"`
+HELPERS=`ls $CURDIR/git-*`
 for HELPER in $HELPERS
 do
-  echo git $HELPER
+  HELPER=`basename $HELPER | sed -e "s/^git-//"`
+  [ $HELPER != "助けて" ] && echo git $HELPER
 done
