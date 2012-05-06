@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# $ git あれして
+#    1. mergeを取り消したい
+#    2. rebaseをやめたい
+#    3. zipを作りたい
+#    4. コミットするのbranchを間違えた
+#    5. 最後のコミットの状態に戻す
+#    6. 前回のコミット説明文を書き直したい
+#    7. 特定のコミットを取り消したい
+# どれやるの？ > 2 
+# git rebaseをやめたい を実行するよ(Y/n) > 
+
+# or 
+
+# $ git あれして コミット
+#    1. コミットするのbranchを間違えた
+#    2. 最後のコミットの状態に戻す
+#    3. 前回のコミット説明文を書き直したい
+#    4. 特定のコミットを取り消したい
+# どれやるの？ > 
+
+
+
+listcmd () {
+  WORD=$1
+  RUNCMD=$2
+  i=0
+  IFS=$'\n'
+  for cmd in `git 助けて`;do
+    # 自分は一覧に出さない
+    if [ "${cmd}" = `basename $SELF|sed 's/-/ /g'` ];then
+      continue;
+    fi
+
+    # 第二引数で絞り込み
+    if [ -n "${WORD}" ];then
+      if [ -z "`echo ${cmd}|grep ${WORD}`" ];then
+        continue;
+      fi
+    fi
+
+    i=$(($i + 1))
+
+    if [ $RUNCMD -eq 0 ];then
+      printf "%4s. %s\n" $i `echo $cmd|sed 's/^git //g'`
+    fi
+
+    if [ $RUNCMD -eq $i ];then
+      echo -n "${cmd} を実行するよ(Y/n) > "
+      read INPUT
+      case $INPUT in
+        "Y" | "y" | "")
+          eval $cmd
+          ;;
+        *)
+          ;;
+      esac
+      exit 0
+    fi
+  done
+
+  if [ $i -eq 0 ];then # それっぽいコマンドが見つからない
+    echo "${WORD} とか知らないよ";
+    exit 1
+  fi
+  return $i
+}
+
+selectcmd () {
+  echo -n "どれやるの？ > "
+  read INPUT
+  expr "$INPUT" : '\(^[0-9]*$\)' > /dev/null
+  if [ $? -eq 0 ];then
+    return $INPUT
+  else
+    echo -n "数字で指定して。"
+    selectcmd
+  fi
+}
+
+SELF=$0
+WORD=$1
+
+listcmd "$WORD" 0
+count=$?
+if [ $count -eq 1 ];then # 候補が1つしかないときはそれを実行しようとする
+  listcmd "$WORD" 1
+fi
+
+selectcmd 
+listcmd "$WORD" $?
