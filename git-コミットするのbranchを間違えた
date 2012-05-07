@@ -7,11 +7,10 @@ if [ $new_branch -x ]; then
   read new_branch;
 fi
 
-git reset HEAD^
+git reset --soft HEAD^
 if git show-ref --verify --quiet refs/heads/$new_branch; then
   git checkout $new_branch
 else
   git checkout -b $new_branch
 fi
-git add .
 git commit
