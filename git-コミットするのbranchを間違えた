@@ -8,6 +8,10 @@ if [ $new_branch -x ]; then
 fi
 
 git reset HEAD^
-git checkout -b $new_branch
+if git show-ref --verify --quiet refs/heads/$new_branch; then
+  git checkout $new_branch
+else
+  git checkout -b $new_branch
+fi
 git add .
 git commit
