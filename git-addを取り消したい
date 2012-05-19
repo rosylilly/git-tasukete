@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ ! -n "$1" ]; then
+    echo "addを取り消したいファイルを指定してね"
+    exit;
+fi
+
+git reset HEAD $1
