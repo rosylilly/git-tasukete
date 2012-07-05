@@ -13,4 +13,4 @@ if [ ! -f $FILE ]; then
 fi
 
 echo "> 書いたのはこの人たちだよ";
-git blame $FILE | sed -e 's/).*//' -e "s/^.*(\(.*\).*$/\1/g" | cut -d " " -f 1-2 | sort | uniq
+git blame $FILE | sed "s/^.*(\(.*\).*$/\1/g" | cut -d " " -f 1-2 | sort | uniq
