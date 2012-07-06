@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ ! -n "$1" ]; then
+  echo "どのファイルについて知りたいの？";
+  read FILE;
+else
+  FILE=$1;
+fi
+
+if [ ! -f $FILE ]; then
+  echo "そんなファイルはないよ";
+  exit;
+fi
+
+echo "> 書いたのはこの人たちだよ";
+git blame $FILE | sed "s/^.*(\(.*\).*$/\1/g" | cut -d " " -f 1-2 | sort | uniq
