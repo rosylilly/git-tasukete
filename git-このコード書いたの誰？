@@ -1,10 +1,26 @@
 #!/bin/sh
 
-if [ ! -n "$1" ]; then
-  echo "どのファイルについて知りたいの？";
-  read FILE;
-else
-  FILE=$1;
+ARGS=$#;
+
+while getopts L: OPT
+do
+  case $OPT in
+    "L" ) FLAG_L="TRUE" ; VALUE_L=$OPTARG ;;
+    esac
+done
+
+shift `expr $OPTIND - 1`
+
+if [ "$FLAG_L" = "TRUE" -a $ARGS -ne 3 ]; then
+  echo "引数がおかしいよ";
+  exit;
+fi
+
+FILE=$1;
+
+if [ ! -n "$FILE" ]; then
+  echo "ファイルを指定してね";
+  exit;
 fi
 
 if [ ! -f $FILE ]; then
@@ -12,5 +28,10 @@ if [ ! -f $FILE ]; then
   exit;
 fi
 
-echo "> 書いたのはこの人たちだよ";
-git blame $FILE | sed "s/^.*(\(.*\).*$/\1/g" | cut -d " " -f 1-2 | sort | uniq
+if [ "$FLAG_L" = "TRUE" ]; then
+  SHA=`git blame -l $FILE -L $VALUE_L,+1 | cut -d " " -f 1`
+  git show $SHA
+else
+  echo "> 書いたのはこの人たちだよ";
+  git blame $FILE | cut -d " " -f 2-3 | sed -e "s/(//" -e "s/Not Committed//g" -e "s/ [0-9]*-[0-9]*-[0-9]*//g" -e "/^$/d" | sort | uniq
+fi
